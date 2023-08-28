@@ -1,6 +1,6 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import validator from 'validator';
+import { ErrorMessage, Formik, Form, Field } from 'formik';
+// import validator from 'validator';
+import * as Yup from 'yup';
 
 const initialValues = {
     name: '',
@@ -8,38 +8,27 @@ const initialValues = {
     password: '',
     confirmPassword: '',
   },
-  onSubmit = values => {
+  onSubmit = (values) => {
     console.log(values);
   },
-  validate = values =>{
-    const { name, email, password, confirmPassword }=values
-    let errors = {};
 
-    if(!name){
-      errors.name = `Nom d'utilisateur requis`
-    }
-    if(!email){
-      errors.email = `Adresse email requis`
-    }else if(validator.isEmail(email)){
-      errors.email = `Adresse email n'est pas valide`
-    }
-    if(!password){
-      errors.password = `Mot de passe requis`
-    }
-    if(!confirmPassword || password ==! confirmPassword){
-      errors.confirmPassword = `Vous devez confirmez votre mot de passe`
-    }
-
-  }
-
+  validateSchema = Yup.object({
+    name: Yup.string().required('Required'),
+    email: Yup.string().required('Required').email('Invalid Email!'),
+    password: Yup.string().required('Required'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Required'),
+  }),
+  errorSyle = {
+    color: 'red',
+    // textAlign: 'center',
+    width: '100%',
+    paddingBottom: '10px',
+    // border: '1px solid white',
+  };
 function Signup() {
-  const formik = useFormik({
-    initialValues,
-    onSubmit,
-    validate
-  });
-  const { name, email, password, confirmPassword } = formik.values;
-  const { handleChange, handleSubmit } = formik;
+
 
   return (
     <div className='signUpLoginBox'>
@@ -48,59 +37,69 @@ function Signup() {
         <div className='formBoxRight'>
           <div className='formContent'>
             <h2>Inscription</h2>
-            <form onSubmit={handleSubmit}>
-              <div className='inputBox'>
-                <input
-                  type='text'
-                  id='name'
-                  name='name'
-                  autoComplete='off'
-                  required
-                  onChange={handleChange}
-                  value={name}
-                />
-                <label htmlFor='name'>Nom d'utilisateur</label>
-              </div>
-              <div className='inputBox'>
-                <input
-                  type='text'
-                  id='email'
-                  name='email'
-                  autoComplete='off'
-                  required
-                  onChange={handleChange}
-                  value={email}
-                />
-                <label htmlFor='email'>Adresse email</label>
-              </div>
-              <div className='inputBox'>
-                <input
-                  type='password'
-                  id='password'
-                  name='password'
-                  autoComplete='off'
-                  required
-                  onChange={handleChange}
-                  value={password}
-                />
-                <label htmlFor='password'>Mot de passe</label>
-              </div>
-              <div className='inputBox'>
-                <input
-                  type='password'
-                  id='confirmPassword'
-                  name='confirmPassword'
-                  autoComplete='off'
-                  required
-                  onChange={handleChange}
-                  value={confirmPassword}
-                />
-                <label htmlFor='confirmPassword'>
-                  Confirmez le mot de passe
-                </label>
-              </div>
-              <button type='submit'>Inscription</button>
-            </form>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validateSchema}
+              onSubmit={onSubmit}
+            >
+              <Form>
+                <div className='inputBox'>
+                  <Field
+                    type='text'
+                    id='name'
+                    name='name'
+                    autoComplete='off'
+                    required
+                  />
+                  <label htmlFor='name'>Nom d'utilisateur</label>
+                  <ErrorMessage name='name' component='p' style={errorSyle} />
+                </div>
+                <div className='inputBox'>
+                  <Field
+                    type='text'
+                    id='email'
+                    name='email'
+                    autoComplete='off'
+                    required
+                  />
+                  <label htmlFor='email'>Adresse email</label>
+                  <ErrorMessage name='email' component='p' style={errorSyle} />
+                </div>
+                <div className='inputBox'>
+                  <Field
+                    type='password'
+                    id='password'
+                    name='password'
+                    autoComplete='off'
+                    required
+                  />
+                  <label htmlFor='password'>Mot de passe</label>
+                  <ErrorMessage
+                    name='password'
+                    component='p'
+                    style={errorSyle}
+                  />
+                </div>
+                <div className='inputBox'>
+                  <Field
+                    type='password'
+                    id='confirmPassword'
+                    name='confirmPassword'
+                    autoComplete='off'
+                    required
+                  />
+                  <label htmlFor='confirmPassword'>
+                    Confirmez le mot de passe
+                  </label>
+                  <ErrorMessage
+                    name='confirmPassword'
+                    component='p'
+                    style={errorSyle}
+                  />
+                </div>
+                <button type='submit'>Inscription</button>
+              </Form>
+            </Formik>
           </div>
         </div>
       </div>

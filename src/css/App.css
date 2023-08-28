@@ -286,6 +286,7 @@ footer {
 .formContent .inputBox {
   position: relative;
   height: 80px;
+  margin-bottom: 10px;
 }
 
 .formContent .inputBox input {
@@ -294,7 +295,7 @@ footer {
   font-size: 17px;
   color: var(--red-color);
   font-weight: bold;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
   border: none;
   background: transparent;
   border-bottom: 1px solid var(--white-color);
@@ -317,10 +318,10 @@ footer {
 
 .formContent .inputBox input:focus~label,
 .formContent .inputBox input:valid~label {
-  top: -30px;
+  top: -20px;
   left: 0;
   color: var(--white-color);
-  font-size: 16px;
+  font-size: 14px;
   font-style: italic;
 }
 
